@@ -12,18 +12,12 @@ WiredTiger Storage Engine
    :depth: 1
    :class: singlecol
 
-Starting in MongoDB 3.0, the WiredTiger storage engine is available in
-the 64-bit builds.
-
-.. versionchanged:: 3.2
-
-   The WiredTiger storage engine is the default storage engine starting
-   in MongoDB 3.2. For existing deployments, if you do not specify the
-   ``--storageEngine`` or the :setting:`storage.engine` setting,
-   MongoDB 3.2 can automatically determine the storage engine used to
-   create the data files in the ``--dbpath`` or
-   :setting:`storage.dbPath`. See
-   :ref:`3.2-storage-engine-compatibility`.
+Starting in MongoDB 3.2, the WiredTiger storage engine is the default
+storage engine. For existing deployments, if you do not specify the
+``--storageEngine`` or the :setting:`storage.engine` setting, the
+version 3.2+ :binary:`~bin.mongod` instance can automatically determine
+the storage engine used to create the data files in the ``--dbpath`` or
+:setting:`storage.dbPath`. See :ref:`3.2-storage-engine-compatibility`.
 
 Document Level Concurrency
 --------------------------
@@ -95,10 +89,11 @@ You can disable journaling by setting :setting:`storage.journal.enabled`
 to ``false``, which can reduce the overhead of maintaining the
 journal. 
 
-For :term:`standalone` instances, not using the journal means that you
-will lose some data modifications when MongoDB exits unexpectedly
-between checkpoints. For members of :term:`replica sets <replica set>`,
-the replication process may provide sufficient durability guarantees.
+For :term:`standalone` instances, not using the journal means that,
+when MongoDB exits unexpectedly, you will lose all data modifications
+prior to the last checkpoint. For members of :term:`replica sets
+<replica set>`, the replication process may provide sufficient
+durability guarantees.
 
 .. seealso:: :ref:`Journaling with WiredTiger <journaling-wiredTiger>`
 

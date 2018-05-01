@@ -276,14 +276,9 @@ for the following commands:
 - :dbcommand:`dbStats`
 - :dbcommand:`count`
 - :dbcommand:`distinct`
-- :dbcommand:`geoNear`
+- :dbcommand:`geoNear` (Deprecated in MongoDB 4.0)
 - :dbcommand:`geoSearch`
 - :dbcommand:`parallelCollectionScan`
-
-.. versionadded:: 2.4
-   :binary:`~bin.mongos` adds support for routing commands to shards using
-   read preferences. Previously :binary:`~bin.mongos` sent all commands to
-   shards' primaries.
 
 .. [#capacity-planning] If your set has more than one secondary, and
    you use the :readmode:`secondary` read preference mode, consider

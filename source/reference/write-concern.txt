@@ -151,8 +151,7 @@ the write operation has been written to the :doc:`journal
      :binary:`~bin.mongod` instance that is running without journaling
      produces an error.
   
-   - For replica sets using :rsconf:`protocolVersion: 1
-     <protocolVersion>`, if journaling is enabled, :writeconcern:`w:
+   - If journaling is enabled, :writeconcern:`w:
      "majority" <"majority">` may imply ``j: true``. The
      :rsconf:`writeConcernMajorityJournalDefault` replica set
      configuration setting determines the behavior. See
@@ -277,5 +276,3 @@ concerns [#3.2-behavior]_:
       Prior to MongoDB 3.0, ``w: "majority"`` refers to the majority of
       the replica set's members instead of the majority of the replica
       set's voting members.
-
-   .. include:: /includes/fact-master-slave-majority.rst

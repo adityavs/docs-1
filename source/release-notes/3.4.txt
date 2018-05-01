@@ -30,6 +30,85 @@ Minor Releases
 
       /release-notes/3.4-changelog
 
+.. _3.4.14-release-notes:
+
+3.4.14 - March 20, 2018
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-28151`: Authentication database should be synced first
+  during an initial sync.
+
+- :issue:`SERVER-32886`:  Unnecessary sleeps during chunk migration.
+
+- :issue:`SERVER-32933`: Allow ``mongod`` to start when unable to reach
+  LDAP server.
+
+- :ref:`3.4.14-changelog`
+
+- `All JIRA issues closed in 3.4.14
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%273.4.14%27>`_
+
+
+.. _3.4.13-release-notes:
+
+3.4.13 - Feb 10, 2018
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-33238`: Prevent WiredTiger read ticket count from going negative.
+
+- :ref:`3.4.13-changelog`
+
+- `All JIRA issues closed in 3.4.13
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%273.4.13%27>`_
+
+
+.. _3.4.12-release-notes:
+
+3.4.12 - Feb 8, 2018
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-31437`: Fix parsing of ``mongo host/db`` connect string.
+
+- :issue:`SERVER-32875`: Don't stall ftdc due to running out of tickets.
+
+- :issue:`SERVER-33089`: Unable to start queryable mongod because it
+  failed to regenerate index for ``admin.system.users``.
+
+- :ref:`3.4.12-changelog`
+
+- `All JIRA issues closed in 3.4.12
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%273.4.12%27>`_
+
+
+
+.. _3.4.11-release-notes:
+
+3.4.11 - Jan 31, 2018
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-19605`: Oplog timeout should be configurable.
+
+- :issue:`SERVER-19919`: Chunks that exceed 250000 docs but are under half chunk size get marked as jumbo.
+
+- :issue:`SERVER-29293`: Recipient shard fails to abort migration on stepdown.
+
+- :issue:`SERVER-32001`: unindexing a key in a partial unique index may cause server crash
+
+- :ref:`3.4.11-changelog`
+
+- `All JIRA issues closed in 3.4.11
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%273.4.11%27>`_
+
+
+
 .. _3.4.10-release-notes:
 
 3.4.10 - Oct 31, 2017
@@ -312,6 +391,8 @@ Starting in MongoDB 3.4:
   MongoDB can perform at most *n/2* (rounded down) simultaneous chunk
   migrations.
 
+.. _3.4-remove-sccc:
+
 Removal of Support for SCCC Config Servers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -323,8 +404,9 @@ deploy your config servers as a replica set (CSRS).
 To upgrade your sharded cluster to version 3.4, the config servers must
 be running as a replica set.
 
-To convert your existing config servers from SCCC to CSRS, see
-:doc:`/tutorial/upgrade-config-servers-to-replica-set`.
+To convert your existing config servers from SCCC to CSRS, see the
+:v3.4:`Upgrade Config Servers to Replica Set
+</tutorial/upgrade-config-servers-to-replica-set>`.
 
 Sharding Zones
 ~~~~~~~~~~~~~~

@@ -45,8 +45,9 @@ Get MongoDB Enterprise
 
 .. include:: /includes/extracts/install-past-mongodb-enterprise-windows.rst
 
-Download the latest production release of MongoDB from the `MongoDB
-Download Center <https://www.mongodb.com/download-center#enterprise>`_.
+Download the latest production release of MongoDB Enterprise from the
+`MongoDB Download Center
+<https://www.mongodb.com/download-center#enterprise>`_.
 
 Install MongoDB Enterprise
 --------------------------
@@ -90,7 +91,7 @@ You can set up the MongoDB server as a :guilabel:`Windows Service` that
 starts automatically at boot time.
 
 The following procedure assumes you have installed MongoDB using the
-``.msi`` installer with the path ``C:\Program Files\MongoDB\Server\3.4\``.
+``.msi`` installer with the path ``C:\Program Files\MongoDB\Server\3.6\``.
 
 If you have installed in an alternative directory, you will need to
 adjust the paths as appropriate.

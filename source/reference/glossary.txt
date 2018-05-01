@@ -304,7 +304,7 @@ Glossary
    failover
       The process that allows a :term:`secondary` member of a
       :term:`replica set` to become :term:`primary` in the event of a
-      failure. See :ref:`replica-set-failover`.
+      failure. See :ref:`replication-auto-failover`.
 
    field
       A name-value pair in a :term:`document <document>`. A document has
@@ -336,7 +336,7 @@ Glossary
       :doc:`geospatial queries </geospatial-queries>`. For
       supported GeoJSON objects, see :ref:`geo-overview-location-data`.
       For the GeoJSON format specification, see
-      `<http://geojson.org/geojson-spec.html>`_.
+      `<https://tools.ietf.org/html/rfc7946#section-3.1>`_.
 
    geospatial
       Relating to geographical location. See :doc:`/geospatial-queries`.
@@ -442,7 +442,7 @@ Glossary
       A LineString is defined by an array of two or more positions. A
       closed LineString with four or more positions is called a
       LinearRing, as described in the GeoJSON LineString specification:
-      `<http://geojson.org/geojson-spec.html#linestring>`_. To use a
+      `<https://tools.ietf.org/html/rfc7946#section-3.1.4>`_. To use a
       LineString in MongoDB, see
       :ref:`geospatial-indexes-store-geojson`.
 
@@ -475,13 +475,6 @@ Glossary
       using map-reduce. For map-reduce implementation, see
       :doc:`/core/map-reduce`. For all approaches to aggregation,
       see :doc:`/aggregation`.
-
-   master
-      The database that receives all writes in a conventional
-      master-:term:`slave` replication. In MongoDB, :term:`replica
-      sets <replica set>` replace master-slave replication for most use
-      cases. For more information on master-slave replication, see
-      :doc:`/core/master-slave`.
 
    md5
       A hashing algorithm used to efficiently provide
@@ -653,14 +646,14 @@ Glossary
 
    Point
       A single coordinate pair as described in the GeoJSON Point
-      specification: `<http://geojson.org/geojson-spec.html#point>`_. To
+      specification: `<https://tools.ietf.org/html/rfc7946#section-3.1.2>`_. To
       use a Point in MongoDB, see
       :ref:`geospatial-indexes-store-geojson`.
 
    Polygon
       An array of :term:`LinearRing <LineString>` coordinate arrays, as
       described in the GeoJSON Polygon specification:
-      `<http://geojson.org/geojson-spec.html#polygon>`_. For Polygons
+      `<https://tools.ietf.org/html/rfc7946#section-3.1.6>`_. For Polygons
       with multiple rings, the first must be the exterior ring and
       any others must be interior rings or holes.
 
@@ -693,9 +686,9 @@ Glossary
       :doc:`/tutorial/create-chunks-in-sharded-cluster`.
 
    primary
-      In a :term:`replica set`, the primary member is the current
-      :term:`master` instance, which receives all write operations.
-      See :ref:`replica-set-primary-member`.
+      In a :term:`replica set`, the primary is the member that
+      receives all write operations. See
+      :ref:`replica-set-primary-member`.
 
    primary key
       A record's unique immutable identifier. In an :term:`RDBMS`, the primary
@@ -790,7 +783,7 @@ Glossary
       .. deprecated:: 1.6
 
    replica set
-      A cluster of MongoDB servers that implements master-slave
+      A cluster of MongoDB servers that implements
       replication and automated failover. MongoDB's recommended
       replication strategy. See :doc:`/replication`.
 
@@ -874,14 +867,6 @@ Glossary
       instance accepts writes. Single-master replication ensures
       consistency and is the replication topology employed by MongoDB.
       See :doc:`/core/replica-set-primary`.
-
-   slave
-      A read-only database that replicates operations from a
-      :term:`master` database in conventional master/slave replication.
-      In MongoDB, :term:`replica sets <replica set>` replace
-      master/slave replication for most use cases. However, for
-      information on master/slave replication, see
-      :doc:`/core/master-slave`.
 
    snappy
       A compression/decompression library designed to balance

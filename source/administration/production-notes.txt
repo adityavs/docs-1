@@ -13,6 +13,11 @@ Production Notes
 This page details system configurations that affect MongoDB,
 especially when running in production.
 
+.. admonition:: Deprecated
+   :class: warning
+
+   .. include:: /includes/fact-4.0-mmapv1-deprecated.rst
+
 .. include:: /includes/fact-mms-summary.rst
 
 MongoDB Binaries
@@ -64,8 +69,7 @@ systems are recommended for production use:
 - Amazon Linux
 - Debian 7.1
 - RHEL / CentOS 6.2+
-- SLES 11+
-- Ubuntu LTS 14.04
+- SLES 12
 - Ubuntu LTS 16.04
 - Windows Server 2012 & 2012 R2
 
@@ -92,17 +96,6 @@ to the configured :term:`storage engine`. :binary:`~bin.mongod` will not start i
 :setting:`~storage.dbPath` contains data files created by a storage
 engine other than the one specified by :option:`--storageEngine <mongod --storageEngine>`.
 
-.. versionchanged:: 3.2
-
-   As of MongoDB 3.2, MongoDB uses the :ref:`WiredTiger
-   <storage-wiredtiger>` storage engine by default.
-
-.. versionchanged:: 3.0
-
-   MongoDB includes support for two storage engines: :ref:`MMAPv1
-   <storage-mmapv1>`, the storage engine available in previous versions
-   of MongoDB, and :ref:`WiredTiger <storage-wiredtiger>`.
-
 :binary:`~bin.mongod` must possess read and write permissions for the specified
 :setting:`~storage.dbPath`.
 
@@ -110,24 +103,6 @@ engine other than the one specified by :option:`--storageEngine <mongod --storag
 
 Concurrency
 -----------
-
-MMAPv1
-~~~~~~
-
-.. versionchanged:: 3.0
-
-   Beginning with MongoDB 3.0, :ref:`MMAPv1 <storage-mmapv1>` provides
-   *collection-level locking*: All collections have a unique
-   readers-writer lock that allows multiple clients to modify documents
-   in different collections at the same time.
-
-   For MongoDB versions 2.2 through 2.6 series, each database has a
-   readers-writer lock that allows concurrent read access to a
-   database, but gives exclusive access to a single write operation per
-   database. See the :doc:`Concurrency </faq/concurrency>` page for
-   more information. In earlier versions of MongoDB, all write
-   operations contended for a single readers-writer lock for the entire
-   :binary:`~bin.mongod` instance.
 
 .. _prod-notes-wired-tiger-concurrency:
 
@@ -142,6 +117,22 @@ can modify different documents in a collection at the same time.
 .. seealso:: :ref:`prod-notes-ram` provides information about how WiredTiger
    takes advantage of multiple CPU cores and how to improve operation
    throughput.
+
+MMAPv1 (*Deprecated in MongoDB 4.0*)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Beginning with MongoDB 3.0, :ref:`MMAPv1 <storage-mmapv1>` provides
+*collection-level locking*: All collections have a unique
+readers-writer lock that allows multiple clients to modify documents in
+different collections at the same time.
+
+For MongoDB versions 2.2 through 2.6 series, each database has a
+readers-writer lock that allows concurrent read access to a database,
+but gives exclusive access to a single write operation per database.
+See the :doc:`Concurrency </faq/concurrency>` page for more
+information. In earlier versions of MongoDB, all write operations
+contended for a single readers-writer lock for the entire
+:binary:`~bin.mongod` instance.
 
 Data Consistency
 ----------------
@@ -249,8 +240,8 @@ libraries (i.e. drivers) can run on big or little endian systems.
 Allocate Sufficient RAM and CPU
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MMAPv1
-``````
+MMAPv1 (*Deprecated in MongoDB 4.0*)
+````````````````````````````````````
 
 Due to its concurrency model, the :ref:`MMAPv1 <storage-mmapv1>` storage engine does not
 require many CPU cores. As such, increasing the number of cores can
@@ -531,9 +522,9 @@ When running MongoDB in production on Linux, you should use Linux
 kernel version 2.6.36 or later, with either the XFS or EXT4 filesystem.
 If possible, use XFS as it generally performs better with MongoDB.
 
-With the :ref:`WiredTiger storage engine <storage-wiredtiger>`, use of
-XFS is **strongly recommended** to avoid performance issues that may
-occur when using EXT4 with WiredTiger.
+With the :ref:`WiredTiger storage engine <storage-wiredtiger>`, using
+XFS is **strongly recommended** for data bearing nodes to avoid
+performance issues that may occur when using EXT4 with WiredTiger.
 
 With the :ref:`MMAPv1 storage engine <storage-mmapv1>`, MongoDB
 preallocates its database files before using them and often creates
@@ -558,6 +549,44 @@ possible, use XFS as it generally performs better with MongoDB.
    MongoDB requires a filesystem that supports ``fsync()``
    *on directories*. For example, HGFS and Virtual Box's shared
    folders do *not* support this operation.
+
+Set ``vm.swappiness`` to ``1``
+``````````````````````````````
+
+“Swappiness” is a Linux kernel setting that influences the behavior of
+the Virtual Memory manager when it needs to allocate a swap, ranging
+from ``0`` to ``100``, inclusive.
+
+- A setting of ``0`` tells the kernel to swap only to avoid
+  out-of-memory problems.
+
+- A setting of ``100`` tells it to swap aggressively to disk.
+
+If your host runs kernel versions ``3.5`` or later, or
+:abbr:`RHEL (Red Hat Enterprise Linux)` / CentOS kernel ``2.6.32-303``
+or later, setting this value to ``0`` could disable swapping. Set this
+to ``1``.
+
+To see what the current swappiness level is, run:
+
+.. code-block:: sh
+
+   example@example:$ cat /proc/sys/vm/swappiness
+
+   60
+
+To change swappiness while the system is running, run:
+
+.. code-block:: sh
+
+   example@example:$ sysctl vm.swappiness=1
+
+To change swappiness permanently, edit the ``/etc/sysctl.conf`` file in
+your preferred text editor and change this value:
+
+.. code-block:: ini
+
+   vm.swappiness = 1
 
 .. _linux-recommended-configuration:
 
@@ -618,7 +647,7 @@ For the **WiredTiger** storage engine:
   <https://www.mongodb.com/products/enterprise-grade-support>`_ can provide
   advice and guidance on non-zero readahead configurations.
 
-For the **MMAPv1** storage engine:
+For the **MMAPv1** storage engine (*Deprecated in MongoDB 4.0*):
 
 - Ensure that readahead settings for the block devices that store the
   database files are appropriate. For random access use patterns, set
@@ -637,8 +666,8 @@ the MongoDB log:
 
 .. code-block:: none
 
-   <path to SSL libs>/libssl.so.<version>: no version information available (required by /usr/bin/mongod)
-   <path to SSL libs>/libcrypto.so.<version>: no version information available (required by /usr/bin/mongod)
+   <path to TLS/SSL libs>/libssl.so.<version>: no version information available (required by /usr/bin/mongod)
+   <path to TLS/SSL libs>/libcrypto.so.<version>: no version information available (required by /usr/bin/mongod)
 
 These warnings indicate that the system's TLS/SSL libraries are different
 from the TLS/SSL libraries that the :binary:`~bin.mongod` was compiled against.
@@ -695,8 +724,8 @@ cache that uses 40% or more of the total memory can lead to increased
 memory pressure and poor performance. Use ``SetSystemFileCacheSize`` to
 limit the amount of memory that the file system cache can use.
 
-MongoDB Using MMAPv1
-````````````````````
+MongoDB Using MMAPv1 (*Deprecated in MongoDB 4.0*)
+``````````````````````````````````````````````````
 
 Install Hotfix for MongoDB 2.6.6 and Later
 ++++++++++++++++++++++++++++++++++++++++++
@@ -740,20 +769,52 @@ accommodate Windows' commitment rules during peak database use.
 MongoDB on Virtual Environments
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This section describes considerations when running MongoDB in some of the
-more common virtual environments.
+This section describes considerations when running MongoDB in some of
+the more common virtual environments.
 
 For all platforms, consider :ref:`virtualized-disks-scheduling`.
 
-EC2
-```
+:abbr:`AWS (Amazon Web Services)` :abbr:`EC2 (Elastic Compute Cloud)`
+`````````````````````````````````````````````````````````````````````
 
-When available, enable AWS's `Enhanced Networking
-<http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/enhanced-networking.html#enabling_enhanced_networking>`_
-for your instance. Not all instance types support Enhanced Networking.
-Refer to the `AWS documentation
-<http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/enhanced-networking.html#enabling_enhanced_networking>`_
-for more information.
+There are two performance configurations to consider:
+
+- Reproducible performance for performance testing or benchmarking, and
+- Raw maximum performance
+
+To tune performance on :abbr:`EC2 (Elastic Compute Cloud)` for either
+configuration, you should:
+
+- Enable :abbr:`AWS (Amazon Web Services)`
+  `Enhanced Networking <http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/enhanced-networking.html#enabling_enhanced_networking>`_
+  for your instance. Not all instance types support Enhanced Networking.
+
+  To learn more about Enhanced Networking, see to the
+  `AWS documentation <http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/enhanced-networking.html#enabling_enhanced_networking>`_.
+
+If you are concerned more about reproducible performance on
+:abbr:`EC2 (Elastic Compute Cloud)`, you should also:
+
+- Use provisioned :abbr:`IOPS (Input/Output Operations Per Second)`
+  for the storage, with separate devices for journal and data. Do not
+  use the ephemeral (:abbr:`SSD (Solid State Disk)`) storage available
+  on most instance types as their performance changes moment to moment.
+  (The ``i`` series is a notable exception, but very expensive.)
+
+- Disable :abbr:`DVFS (dynamic voltage and frequency scaling)` and
+  :abbr:`CPU (central processing unit)` power saving modes.
+
+  .. seealso::
+
+     `Amazon documentation on Processor State Control <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/processor_state_control.html>`_
+
+- Disable hyperthreading.
+
+  .. seealso::
+
+     `Amazon blog post on disabling Hyper-Threading <https://aws.amazon.com/blogs/compute/disabling-intel-hyper-threading-technology-on-amazon-linux/>`_.
+
+- Use ``numactl`` to bind memory locality to a single socket.
 
 .. _windows-azure-production-notes:
 

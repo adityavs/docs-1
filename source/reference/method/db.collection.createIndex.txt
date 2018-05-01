@@ -1,3 +1,5 @@
+.. _method-createIndex:
+
 ===========================
 db.collection.createIndex()
 ===========================
@@ -24,6 +26,9 @@ Definition
       indexes, see :ref:`3.2-version-0-indexes`.
 
    .. include:: /includes/apiargs/method-db.collection.createIndex-param.rst
+
+   The :method:`db.collection.createIndex()` is a wrapper around the
+   :dbcommand:`createIndexes` command.
 
    To minimize the impact of building an index on replica sets and
    sharded clusters, use a rolling index build procedure as described
@@ -61,9 +66,6 @@ Option for Collation
 
 .. versionadded:: 3.4
 
-The :ref:`collation <collation>` option is available for all index
-types except for ``text`` indexes.
-
 .. warning::
 
    Collation is not supported in MongoDB 3.2 and earlier versions. In
@@ -73,6 +75,10 @@ types except for ``text`` indexes.
    <3.4-index-validation>`.
 
 .. include:: /includes/apiargs/method-db.collection.createIndex-option-collation.rst
+
+.. include:: /includes/extracts/collation-index-type-restrictions.rst
+
+.. include:: /includes/extracts/collation-index-type-restrictions-addendum.rst
 
 .. _createIndex-collation-index-use:
 
@@ -112,6 +118,8 @@ The following option is available for :doc:`geoHaystack </core/geohaystack>`
 indexes only:
 
 .. include:: /includes/apiargs/method-db.collection.createIndex-options-geohaystack.rst
+
+.. _create-index-behaviors:
 
 Behaviors
 ---------

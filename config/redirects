@@ -1,7 +1,8 @@
 define: base https://docs.mongodb.com
-define: versions v2.2 v2.4 v2.6 v3.0 v3.2 v3.4 v3.6 master
-symlink: v3.6 -> master
-symlink: manual -> master
+define: versions v2.2 v2.4 v2.6 v3.0 v3.2 v3.4 v3.6 v4.0 master
+symlink: manual -> v3.6
+symlink: upcoming -> master
+symlink: v4.0 -> master
 
 [v2.2]: /${version}/core/read-operations-introduction -> ${base}/${version}/core/read-operations
 [v2.2]: /${version}/core/write-operations-introduction -> ${base}/${version}/core/write-operations
@@ -963,6 +964,9 @@ raw: /manual/release-notes/3.3-dev-series-compatibility -> ${base}/manual/releas
 raw: /master/release-notes/3.3-dev-series-compatibility -> ${base}/master/release-notes/3.4-compatibility
 raw: /manual/release-notes/3.3-dev-series-reference -> ${base}/manual/release-notes/3.4-reference
 raw: /master/release-notes/3.3-dev-series-reference -> ${base}/master/release-notes/3.4-reference
+
+[*-v3.0]: /${version}/tutorial/deploy-sharded-cluster-with-keyfile-access-control -> ${base}/${version}/administration/security
+[*-v3.0]: /${version}/tutorial/enforce-keyfile-access-control-in-existing-sharded-cluster -> ${base}/${version}/tutorial/enable-internal-authentication
 [*-v3.2]: /${version}/release-notes/3.4-compatibility -> ${base}/${version}/release-notes/
 [*-v3.0]: /${version}/release-notes/3.4 -> ${base}/${version}/release-notes/
 [*-v3.2]: /${version}/release-notes/3.4-compatibility -> ${base}/${version}/release-notes/
@@ -1347,6 +1351,23 @@ raw: /master/release-notes/3.0-general-improvements -> ${base}/release-notes/3.0
 [v3.6-*]: /${version}/core/document-validation -> ${base}/${version}/core/schema-validation
 [*-v3.4]: /${version}/core/schema-validation -> ${base}/${version}/core/document-validation
 [v3.6-*]: /${version}/reference/method/sh.getBalancerLockDetails -> ${base}/${version}/reference/method/js-sharding
+[*-v3.2]: /${version}/reference/method/sh.disableAutoSplit -> ${base}/${version}/reference/program/mongos
+[*-v3.2]: /${version}/reference/method/sh.enableAutoSplit -> ${base}/${version}/reference/program/mongos
+[v3.0-*]: /${version}/core/security-scram-sha-1 -> ${base}/${version}/core/security-scram
+[*-v2.6]: /${version}/core/security-scram -> ${base}/${version}/core/security-scram-sha-1
+
+[*-v3.2]: /${version}/reference/command/fsyncUnlock -> ${base}/${version}/reference/method/db.fsyncUnlock
+
+[*-v3.4]: /${version}/changeStreams -> ${base}/${version}/replication
+[*-v3.4]: /${version}/administration/change-streams-production-recommendations -> ${base}/${version}/replication
+[*-v3.4]: /${version}/reference/change-events -> ${base}/${version}/replication
+
+
+[v3.6-*]: /${version}/tutorial/upgrade-config-servers-to-replica-set -> ${base}/v3.2/tutorial/upgrade-config-servers-to-replica-set
+[v3.6-*]: /${version}/tutorial/upgrade-config-servers-to-replica-set-downtime -> ${base}/v3.2/tutorial/upgrade-config-servers-to-replica-set-downtime
+[v3.4-*]: /${version}/tutorial/change-config-server-wiredtiger -> ${base}/v3.2/tutorial/change-config-server-wiredtiger
+
+[v3.6-v3.6]: /${version}/tutorial/change-streams-example -> ${base}/${version}/changeStreams
 
 [v3.6-*]: /${version}/core/data-modeling-json-schema -> ${base}/${version}/core/schema-validation
 [v3.6-*]: /${version}/core/distributed-write-operations -> ${base}/${version}/core/distributed-queries
@@ -1355,6 +1376,17 @@ raw: /master/release-notes/3.0-general-improvements -> ${base}/release-notes/3.0
 [v3.6-*]: /${version}/reference/operator/update/isolated  -> ${base}/${version}/reference/operator/update
 [v3.6-*]: /${version}/reference/method/cursor.snapshot -> ${base}/${version}/reference/method/
 [v3.6-*]: /${version}/administration/replica-sets -> ${base}/${version}/replication
+
+# Redirects for 4.0 and greater
+
+[v4.0-*]: /${version}/core/security-mongodb-cr -> ${base}/${version}/core/security-scram
+[v4.0-*]: /${version}/reference/command/authSchemaUpgrade  -> ${base}/${version}/core/security-scram
+[v4.0-*]: /${version}/reference/command/copydbgetnonce  -> ${base}/${version}/reference/command/copydb
+[v4.0-*]: /${version}/reference/command/resync -> ${base}/${version}/core/master-slave
+[v4.0-*]: /${version}/reference/program/mongoperf -> ${base}/${version}/reference/program
+
+# Redirects for 3.6 or earlier 
+[*-v3.6]: /${version}/reference/read-concern-snapshot -> ${base}/${version}/reference/read-concern
 
 # 2.8 compatibility
 [*]: /${version}/release-notes/2.8-downgrade -> ${base}/${version}/release-notes
@@ -1401,3 +1433,7 @@ raw: /v2.8/release-notes/2.8-changes -> ${base}/v3.0/release-notes/3.0
 [*]: /${version}/reference/method/stopMongod -> ${base}/${version}/reference/method
 [*]: /${version}/reference/method/waitMongoProgramOnPort -> ${base}/${version}/reference/method
 [*]: /${version}/reference/method/waitProgram -> ${base}/${version}/reference/method
+
+
+[*]: /${version}/core/operational-segregation -> ${base}/${version}/core/workload-isolation
+

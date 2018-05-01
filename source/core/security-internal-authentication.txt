@@ -18,6 +18,12 @@ You can authenticate members of :term:`replica sets <replica set>` and
 the members, MongoDB can use either keyfiles or :ref:`x.509 <security-auth-x509>`
 certificates.
 
+The selected method is used for all internal communication. For example, when a
+client authenticates to a :binary:`~bin.mongos` using one of the supported
+:ref:`authentication mechanisms <security-authentication-mechanisms>`,
+the ``mongos`` then uses the configured internal authentication method to
+connect to the required :binary:`~bin.mongod` processes.
+
 .. note::
 
    Enabling internal authentication also enables :doc:`client
@@ -28,7 +34,7 @@ certificates.
 Keyfiles
 --------
 
-Keyfiles use :doc:`/core/security-scram-sha-1` challenge and response
+Keyfiles use :doc:`/core/security-scram` challenge and response
 authentication mechanism. The contents of the keyfiles serve as the
 shared password for the members. A key's length must be between 6 and
 1024 characters and may only contain characters in the base64 set.

@@ -25,11 +25,7 @@ verified user's access to resources and operations.
 Authentication Methods
 ----------------------
 
-To authenticate a :doc:`user </core/security-users>`, MongoDB provides the
-:method:`db.auth()` method.
-
-For the :binary:`~bin.mongo` shell and the MongoDB tools, you can also authenticate
-a user by passing in the user authentication information from the command line.
+.. include:: /includes/fact-authenticate.rst
 
 .. _available-authentication-mechanisms:
 
@@ -43,22 +39,14 @@ existing authentication system.
 
 MongoDB supports multiple authentication mechanisms:
 
-- :ref:`SCRAM-SHA-1 <authentication-scram-sha-1>`
-
-- :ref:`MongoDB Challenge and Response (MONGODB-CR)
-  <authentication-mongodb-cr>`
-
-  .. versionchanged:: 3.0
-     New challenge-response users created in 3.0 will use
-     ``SCRAM-SHA-1``. If using 2.6 user data, MongoDB 3.0 will continue
-     to use ``MONGODB-CR``.
+- :ref:`authentication-scram` (*Default*)
 
 - :ref:`x.509 Certificate Authentication <security-auth-x509>`.
 
 In addition to supporting the aforementioned mechanisms, MongoDB Enterprise
 also supports the following mechanisms:
 
-- :ref:`LDAP proxy authentication <security-auth-ldap>`, and 
+- :ref:`LDAP proxy authentication <security-auth-ldap>`, and
 
 - :ref:`Kerberos authentication <security-auth-kerberos>`.
 
@@ -82,7 +70,7 @@ authentication and sharded clusters, see :ref:`sharding-security`.
 .. class:: hidden
 
    .. toctree::
-      :titlesonly: 
+      :titlesonly:
 
       /core/security-users
       /core/authentication-mechanisms

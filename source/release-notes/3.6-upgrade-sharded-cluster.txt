@@ -40,6 +40,27 @@ clients to connect to your sharded cluster.
 
 For more information, see :ref:`3.6-bind_ip-compatibility`
 
+Shard Replica Sets
+~~~~~~~~~~~~~~~~~~
+
+Starting in MongoDB 3.6, :binary:`~bin.mongod` instances with the shard
+server role must be replica set members.
+
+To upgrade your sharded cluster to version 3.6, the shard servers must
+be running as a replica set. To convert an existing shard standalone
+instance to a shard replica set, see
+:doc:`/tutorial/convert-standalone-to-replica-set`.
+
+Drivers
+~~~~~~~
+
+For MongoDB 3.6.0 - 3.6.3 binaries, you should upgrade your drivers to
+:ref:`3.6 feature compatible drivers <3.6-drivers>` only after you have
+upgraded the MongoDB binaries and updated the feature compatibility
+version of the sharded cluster to 3.6.
+
+For more information, see :issue:`SERVER-33763`.
+
 Prerequisites
 -------------
 
@@ -100,31 +121,6 @@ Prerequisites
       shards their respective ``shardIdentity`` document every 30
       seconds until success. You must wait until all shards receive the
       documents.
-
-- Avoid Metadata Changes during the Upgrade
-    *Optional but Recommended.* During the upgrade, if possible, avoid
-    making changes to the collection metadata; for example, avoid
-    performing any of the following operations:
-
-    - :method:`sh.enableSharding()`
-
-    - :method:`sh.shardCollection()`
-
-    - :method:`sh.addShard()`
-
-    - :method:`db.createCollection()`
-
-    - :method:`db.collection.drop()`
-
-    - :method:`db.dropDatabase()`
-
-    - any operation that creates a database
-
-    - any other operation that modifies the cluster metadata in any way.
-
-    See the :doc:`/reference/sharding` for a complete list of sharding
-    commands. Not all commands on the :doc:`/reference/sharding` page
-    modify the cluster metadata.
 
 - :ref:`Disable the balancer <sharding-balancing-disable-temporarily>`
 

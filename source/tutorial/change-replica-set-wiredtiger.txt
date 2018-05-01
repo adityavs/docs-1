@@ -4,39 +4,78 @@ Change Replica Set to WiredTiger
 
 .. default-domain:: mongodb
 
-.. versionadded:: 3.0
-   The WiredTiger storage engine is available. Also, replica sets may
-   have members with different storage engines.
 
-.. versionchanged:: 3.2
-   WiredTiger is the new default storage engine for MongoDB.
+.. note::
 
-This tutorial gives an overview of changing the storage engine of a
-member of a :term:`replica set` to :ref:`WiredTiger
-<storage-wiredtiger>`.
+   Starting in version 4.0, MongoDB deprecates the MMAPv1 storage
+   engine and will remove MMAPv1 in a future release.
+
+   Use this tutorial to update a replica set to use :ref:`WiredTiger
+   <storage-wiredtiger>`. The procedure updates the replica set in a
+   rolling fashion to avoid downtime.
 
 Considerations
 --------------
 
-Replica sets can have members with different storage engines. As such,
-you can update members to use the WiredTiger storage engine in a rolling
-fashion. Before changing all the members to use WiredTiger, you may
-prefer to run with mixed storage engines for some period. However,
-performance can vary according to workload.
+MongoDB 3.0 or Greater
+~~~~~~~~~~~~~~~~~~~~~~
 
-.. include:: /includes/fact-wiredtiger-minimum-version.rst
+.. container:: admonition
 
-.. include:: /includes/2.6-3.0-mixed-version-wiredTiger-restriction.rst
+   .. include:: /includes/fact-wiredtiger-minimum-version.rst
+
+Default Bind to Localhost
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container:: admonition
+
+   .. include:: /includes/fact-default-bind-ip-change.rst
 
 Procedure
 ---------
 
-This procedure completely removes a :term:`secondary` replica set
-member's data, starts :binary:`~bin.mongod` with WiredTiger, and performs an
+The following procedure updates the replica set in a rolling fashion.
+The procedure updates the :term:`secondary` members first, then steps
+down the :term:`primary`, and updates the stepped-down member.
+
+To update a member to WiredTiger, the procedure removes a member's
+data, starts :binary:`~bin.mongod` with WiredTiger, and performs an
 :doc:`initial sync </tutorial/resync-replica-set-member>`.
 
-To update all members of the replica set to use WiredTiger, update the
-:term:`secondary` members first. Then step down the :term:`primary`, and
-update the stepped-down member.
 
-.. include:: /includes/steps/change-replica-set-wiredtiger.rst
+A. Update the secondary members to WiredTiger.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Update the secondary members one at a time:
+
+.. container:: admonition
+
+   .. include:: /includes/steps/change-replica-set-wiredtiger.rst
+
+Repeat the steps for the remaining secondary members, updating them one
+at a time.
+
+B. Step down the primary.
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Once all the secondary members have been upgraded to WiredTiger,
+connect a :binary:`~bin.mongo` shell to the primary and use
+:method:`rs.stepDown()` to step down the primary and force an election
+of a new primary.
+
+.. container:: admonition
+
+   .. code-block:: javascript
+
+      rs.stepDown()
+
+C. Update the old primary.
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When the primary has stepped down and become a secondary, update the
+secondary to use WiredTiger as before:
+
+.. container:: admonition
+
+   .. include:: /includes/steps/change-replica-set-wiredtiger.rst
+

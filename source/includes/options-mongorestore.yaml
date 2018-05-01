@@ -31,6 +31,15 @@ inherit:
   file: options-shared.yaml
 ---
 program: mongorestore
+name: uri
+inherit:
+  name: uri
+  program: _shared
+  file: options-shared.yaml
+replacement:
+  program: ":binary:`~bin.mongorestore`"
+---
+program: mongorestore
 name: host
 inherit:
   name: host
@@ -225,24 +234,44 @@ directive: option
 args: null
 description: |
   After restoring the database dump, replays the :term:`oplog` entries
-  from the :file:`oplog.bson` file located in the top level of the dump
-  directory. When used in conjunction with :option:`mongodump --oplog`,
+  from a bson file.
+  When used in conjunction with :option:`mongodump --oplog`,
   :binary:`~bin.mongorestore --oplogReplay <mongorestore>`
   restores the database to the point-in-time backup captured with the
   ``mongodump --oplog`` command. 
+  
+  {{program}} searches for any valid source  for the bson file
+  in the following locations:
 
+  - The top level of the dump directory, as in the case of a dump created
+    with :option:`mongodump --oplog`.
+
+  - The path specified by :option:`--oplogFile`.
+
+  - ``<dump-directory>/local/oplog.rs.bson``, as in the case of a dump
+    of the ``oplog.rs`` collection in the ``local`` database
+    on a :binary:`~bin.mongod` that is a member of a replica set.
+
+  If there is an ``oplog.bson`` file at the top level of the dump
+  directory **and** a path specified by :option:`--oplogFile`,
+  {{program}} returns an error.
+     
+  If there is an ``oplog.bson`` file at the top level of the dump directory,
+  {{program}} restores that file as the oplog. If there are also bson
+  files in the ``dump/local`` directory, {{program}} restores them like
+  normal collections.
+  
+  If you specify an oplog file using :option:`--oplogFile`,
+  {{program}} restores that file as the oplog. If there are also bson
+  files in the ``dump/local`` directory, {{program}} restores them like
+  normal collections.
+  
   For an example of {{role}}, see :ref:`backup-restore-oplogreplay`.
-
-  :binary:`~bin.mongorestore --oplogReplay <mongorestore>` replays any
-  valid :file:`oplog.bson` file found in the top level of the dump
-  directory. That is, if you have a bson file that contains valid oplog
-  entries, you can name the file ``oplog.bson`` and move it to the top
-  level of the dump directory for :binary:`~bin.mongorestore --oplogReplay
-  <mongorestore>` to replay.
 
   .. note::
 
-     When using :binary:`~bin.mongorestore` with {{role}}, you must 
+     When using :binary:`~bin.mongorestore` with {{role}} to restore
+     a replica set, you must 
      restore a full dump of a :term:`replica set` member created 
      using :binary:`~bin.mongodump --oplog <mongodump>`. 
      :binary:`~bin.mongorestore` with {{role}} fails if you use any of 
@@ -499,7 +528,11 @@ pre: |
 
 description: |
   Specifies the path to the oplog file containing oplog data for the
-  restore.
+  restore. Use with :option:`--oplogReplay`. 
+  
+  If you specify {{role}} and there is an :file:`oplog.bson`
+  file at the top level of the dump directory, {{program}} returns an 
+  error.
 optional: true
 ---
 program: mongorestore
@@ -512,6 +545,6 @@ pre: |
 description: |
   Runs {{program}} without actually importing any data, returning the
   {{program}} summary information. Use with ``--verbose`` to produce
-  more detailed summary information.  
+  more detailed summary information.
 optional: true
 ...

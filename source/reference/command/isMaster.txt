@@ -54,8 +54,7 @@ roles:
 
    A boolean value that reports when this node is writable. If
    ``true``, then this instance is a :term:`primary` in a
-   :term:`replica set`, or a :term:`master` in a master-slave
-   configuration, or a :binary:`~bin.mongos` instance, or a standalone
+   :term:`replica set`, or a :binary:`~bin.mongos` instance, or a standalone
    :binary:`~bin.mongod`.
 
    This field will be ``false`` if the instance is a
@@ -70,14 +69,10 @@ roles:
 
 .. data:: isMaster.maxMessageSizeBytes
 
-   .. versionadded:: 2.4
-
    The maximum permitted size of a :term:`BSON` wire protocol message.
    The default value is ``48000000`` bytes.
 
 .. data:: isMaster.maxWriteBatchSize
-
-   .. versionadded:: 2.6
 
    The maximum number of write operations permitted in a write batch.
    If a batch exceeds this
@@ -289,5 +284,5 @@ of a replica set:
       :readconcern:`majority <"majority">` reads.
 
 For details on the ``ok`` status field, the ``operationTime`` field,
-and the ``$clusterTime`` field, see `Command Response
-<command-response>`.
+and the ``$clusterTime`` field, see
+:ref:`Command Response <command-response>`.

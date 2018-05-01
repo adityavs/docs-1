@@ -1,9 +1,13 @@
 arg_name: param
 description: |
-  The hostname of either a standalone database instance or of a replica
-  set. Include the port number if the instance is running on a
-  non-standard port. Include the replica set name if the instance is a
-  replica set, as explained below.
+  The replica set name, hostname, and port of at least one member of
+  the shard's replica set. Any additional replica set member hostnames
+  must be comma separated. For example:
+
+  .. code-block:: sh
+
+     <replica_set>/<hostname><:port>,<hostname><:port>, ...
+
 interface: method
 name: host
 operation: sh.addShard

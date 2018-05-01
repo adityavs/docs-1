@@ -4,60 +4,92 @@ Change Sharded Cluster to WiredTiger
 
 .. default-domain:: mongodb
 
-.. versionadded:: 3.0
-   The WiredTiger storage engine is available. Also, sharded clusters
-   may have individual shards with different storage engine
-   configurations.
+.. note::
 
-.. versionchanged:: 3.2
-   WiredTiger is the new default storage engine for MongoDB.
+   Starting in version 4.0, MongoDB deprecates the MMAPv1 storage
+   engine and will remove MMAPv1 in a future release.
 
-This tutorial gives an overview of changing the storage engines of a
-component of a :term:`sharded cluster` to :ref:`WiredTiger
-<storage-wiredtiger>`.
+Use this tutorial to update MongoDB 4.0 sharded clusters to use
+:ref:`WiredTiger <storage-wiredtiger>`.
+
+For earlier versions of MongoDB:
+
+- To convert a 3.6 sharded cluster that uses MMAPv1, see the
+  :v3.6:`MongoDB 3.6 manual
+  </tutorial/change-sharded-cluster-wiredtiger>`.
+
+- To convert a 3.4 sharded cluster that uses MMAPv1, see the
+  :v3.4:`MongoDB 3.4 manual
+  </tutorial/change-sharded-cluster-wiredtiger>`.
+
+- To convert a 3.2 sharded cluster that uses MMAPv1, see the
+  :v3.2:`MongoDB 3.2 manual
+  </tutorial/change-sharded-cluster-wiredtiger>`.
 
 Considerations
 --------------
 
-This procedure may involve downtime, especially if one or more of your
-shards is a :term:`standalone`. If you change the host or port of any
-:term:`shard`, you must update the shard configuration as well.
+Downtime
+~~~~~~~~
 
-.. include:: /includes/fact-wiredtiger-minimum-version.rst
+If you change the host or port of any :term:`shard`, you must update
+the shard configuration as well.
 
-.. include:: /includes/2.6-3.0-mixed-version-wiredTiger-restriction.rst
+Default Bind to Localhost
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Change Shards to WiredTiger
----------------------------
+.. container:: admonition
 
-.. note::
+   .. include:: /includes/fact-default-bind-ip-change.rst
 
-   A sharded cluster **can** have mixed storage engines for its
-   individual :term:`shards <shard>`.
+Config Servers
+~~~~~~~~~~~~~~
 
-To change the storage engine for the :term:`shards <shard>` to
-WiredTiger, refer to the appropriate procedure for each shard:
+Starting in version 3.4, config servers must be :ref:`deployed as
+replica sets (CSRS) <3.4-remove-sccc>`. As such, version 3.4+ config
+servers already use the WiredTiger storage engine.
 
-- If the shard is a :term:`standalone`, see
-  :doc:`/tutorial/change-standalone-wiredtiger`.
+Procedure
+---------
 
-- If the shard is a :term:`replica set`, see
-  :doc:`/tutorial/change-replica-set-wiredtiger`.
+For each replica set :term:`shard <shard>`, to change the storage
+engine to WiredTiger:
 
-Change Config Servers to WiredTiger
------------------------------------
+A. Update the secondary members to WiredTiger.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To change the storage engines of the :term:`config servers <config
-server>` of a sharded cluster, see
-:doc:`/tutorial/change-config-server-wiredtiger`.
+Update the secondary members one at a time:
 
-.. include:: /includes/fact-config-server-storage-engine-mix.rst
+.. container:: admonition
 
-.. seealso:: :doc:`/tutorial/change-config-server-wiredtiger`
+   .. include:: /includes/steps/change-replica-set-wiredtiger.rst
 
-.. class:: hidden
+Repeat the steps for the remaining secondary members, updating them one
+at a time.
 
-   .. toctree::
-      :titlesonly:
+B. Step down the primary.
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      /tutorial/change-config-server-wiredtiger.txt
+Once all the secondary members have been upgraded to WiredTiger,
+connect a :binary:`~bin.mongo` shell to the primary and use
+:method:`rs.stepDown()` to step down the primary and force an election
+of a new primary.
+
+.. container:: admonition
+
+   .. code-block:: javascript
+
+      rs.stepDown()
+
+C. Update the old primary.
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When the primary has stepped down and become a secondary, update the
+secondary to use WiredTiger as before:
+
+.. container:: admonition
+
+   .. include:: /includes/steps/change-replica-set-wiredtiger.rst
+
+Repeat the procedure for the other shards.
+

@@ -1,0 +1,147 @@
+====================================
+Compatibility Changes in MongoDB 4.0
+====================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+.. include:: /includes/in-dev.rst
+
+.. _4.0-remove-mongodb-cr:
+
+Remove Support for ``MONGODB-CR``
+---------------------------------
+
+Starting in version 4.0, MongoDB removes support for the deprecated
+MongoDB Challenge-Response (``MONGODB-CR``) authentication mechanism.
+
+Since version 3.0, MongoDB has not supported the creation of
+``MONGODB-CR`` users unless the deployment had been upgraded from a 2.6
+or earlier deployment that already had ``MONGODB-CR`` users and had not
+upgraded the authentication schema.
+
+If your deployment has user credentials stored in ``MONGODB-CR``
+schema, you must upgrade to :ref:`Salted Challenge Response
+Authentication Mechanism (SCRAM) <authentication-scram>` **before** you
+upgrade to version 4.0. For information on upgrading to ``SCRAM``, see
+:doc:`/release-notes/3.0-scram`.
+
+.. _4.0-remove-authschemaupgrade:
+
+Removal of ``authSchemaUpgrade`` Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+MongoDB 4.0 removes the ``authSchemaUpgrade`` command . The command,
+available in MongoDB 3.0 through MongoDB 3.6, supports the upgrade
+process for systems with ``MONGDB-CR`` users to ``SCRAM`` users.
+
+If your deployment has user credentials stored in ``MONGODB-CR``
+schema, you must upgrade to :ref:`Salted Challenge Response
+Authentication Mechanism (SCRAM) <authentication-scram>` **before** you
+upgrade to version 4.0. For information on upgrading to ``SCRAM``, see
+:doc:`/release-notes/3.0-scram`.
+
+.. _4.0-remove-mongodb-cr-copydb:
+
+Remove ``MONGODB-CR`` Support from ``db.copyDatabase()`` and ``copydb``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The method :method:`db.copyDatabase()` cannot copy from a
+:binary:`~bin.mongod` instance that enforces ``MONGODB-CR``
+authentication.
+
+The command :dbcommand:`copydb` cannot copy from a
+:binary:`~bin.mongod` instance that enforces ``MONGODB-CR``
+authentication. In conjunction with this change, MongoDB 4.0 removes
+the ``copydbgetnonce`` command.
+
+Deprecate MMAPv1
+----------------
+
+Starting in version 4.0, MongoDB deprecates the :ref:`storage-mmapv1`.
+
+To change your MMAPv1 storage engine deployment to
+:doc:`/core/wiredtiger`, see:
+
+- :doc:`/tutorial/change-standalone-wiredtiger`
+
+- :doc:`/tutorial/change-replica-set-wiredtiger`
+
+- :doc:`/tutorial/change-sharded-cluster-wiredtiger`
+
+.. _4.0-compat-remove-pv0:
+
+Remove ``pv0`` for Replica Sets
+-------------------------------
+
+MongoDB 4.0 removes the deprecated replica set protocol version 0
+``pv0``.
+
+Before upgrading to MongoDB 4.0, you must upgrade to :rsconf:`pv1
+<protocolVersion>`.
+
+To upgrade to ``pv1``, connect a :binary:`~bin.mongo` shell to the
+replica set primary and perform the following sequence of operations:
+
+.. code-block:: sh
+
+   cfg = rs.conf();
+   cfg.protocolVersion=1;
+   rs.reconfig(cfg);
+
+To reduce the likelihood of :writeconcern:`w:1 <\<number\>>` rollbacks,
+you can also reconfigure the replica set to a higher
+:rsconf:`settings.catchUpTimeoutMillis` setting.
+
+For more information on ``pv1``, see
+:doc:`/reference/replica-set-protocol-versions`.
+
+Remove Master-Slave Replication
+-------------------------------
+
+MongoDB 4.0 removes support for the deprecated master-slave
+replication. Before you can upgrade to MongoDB 4.0, if your deployment
+uses master-slave replication, you must upgrade to a replica set.
+
+To convert your master-slave replication, see
+:ref:`convert-master-slave-to-replica-set`.
+
+.. _4.0-compatibility-general:
+
+General
+-------
+
+- MongoDB 4.0 removes the ``mongoperf`` binary.
+
+- The :dbcommand:`serverStatus` command now always returns ``0`` for
+  the :serverstatus:`asserts.warning` field.
+
+- You cannot specify :option:`--noIndexBuildRetry <mongod --noIndexBuildRetry>` or
+  :setting:`storage.indexBuildRetry` with :option:`--replSet <mongod --replSet>` or
+  :setting:`replication.replSetName`. That is, you cannot use
+  :option:`--noIndexBuildRetry <mongod --noIndexBuildRetry>`
+  :setting:`storage.indexBuildRetry` for a :binary:`~bin.mongod` instance
+  that is part of a replica set.
+
+- The geospatial query operators :query:`$near` and
+  :query:`$nearSphere` now supports querying on sharded collections.
+
+- MongoDB 4.0 deprecates the :dbcommand:`geoNear` command. Use one of
+  the following operations instead.
+
+  - :pipeline:`$geoNear` aggregation stage.
+
+  - :query:`$near` query operator.
+
+  - :query:`$nearSphere` query operator.
+
+- For the :dbcommand:`create` command (and the :binary:`~bin.mongo`
+  shell :method:`db.createCollection()` method), you cannot set the
+  option ``autoIndexId`` to ``false`` when creating collections in
+  databases other than the ``local`` database.
+

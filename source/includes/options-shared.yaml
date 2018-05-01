@@ -108,7 +108,7 @@ description: |
   *Removed in version 3.0.*
 
   {{verb}} IPv6 support and allows {{program}} to connect to the
-  MongoDB instance using an IPv6 network. Prior to MongoDB 3.0, you 
+  MongoDB instance using an IPv6 network. Prior to MongoDB 3.0, you
   had to specify {{role}} to use IPv6. In MongoDB 3.0 and later, IPv6
   is always enabled.
 
@@ -146,7 +146,7 @@ description: |
 
   .. warning::
 
-     **Version 3.2 and earlier:** For SSL connections (``--ssl``) to
+     **Version 3.2 and earlier:** For TLS/SSL connections (``--ssl``) to
      :binary:`~bin.mongod` and :binary:`~bin.mongos`, if the {{program}} runs without the
      {{role}}, {{program}} will not attempt
      to validate the server certificates. This creates a vulnerability
@@ -316,6 +316,11 @@ description: |
   Specifies the authentication mechanism the {{program}} instance uses to
   authenticate to the :binary:`~bin.mongod` or :binary:`~bin.mongos`.
 
+  .. versionchanged:: 4.0
+
+     MongoDB removes support for the deprecated MongoDB
+     Challenge-Response (``MONGODB-CR``) authentication mechanism.
+
   .. list-table::
      :header-rows: 1
      :widths: 20 40
@@ -329,10 +334,6 @@ description: |
        - `RFC 5802 <https://tools.ietf.org/html/rfc5802>`_ standard
          Salted Challenge Response Authentication Mechanism using the SHA1
          hash function.
-
-     * - :ref:`MONGODB-CR <authentication-mongodb-cr>`
-
-       - MongoDB challenge/response authentication.
 
      * - :ref:`MONGODB-X509 <security-auth-x509>`
 
@@ -366,14 +367,7 @@ inherit:
   name: _authenticationMechanism
   program: _shared
   file: options-shared.yaml
-pre: |
-  .. versionchanged:: 2.6
-     Added support for the ``PLAIN`` and ``MONGODB-X509`` authentication
-     mechanisms.
-
-  .. versionchanged:: 3.0
-     Added support for the ``SCRAM-SHA-1`` authentication mechanism. Changed
-     default mechanism to ``SCRAM-SHA-1``.
+pre: 
 ---
 program: _shared
 name: dbpath
@@ -471,6 +465,44 @@ description: |
 
   This option is available only in MongoDB Enterprise.
 optional: true
+---
+program: _shared
+name: uri
+args: <connectionString>
+directive: option
+description: |
+  .. versionadded:: 3.4.6
+
+  Specify a resolvable :doc:`URI </reference/connection-string/>`
+  connection string for the :binary:`~bin.mongod` to which to
+  connect.
+
+  The following is the standard
+  :doc:`URI </reference/connection-string/>` connection scheme:
+
+  .. code-block:: none
+
+     mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]
+
+  For detailed explanations of the components of this string, refer to
+  the
+  :doc:`Connection String URI Format </reference/connection-string/>`
+  documentation.
+
+  .. important::
+
+     The following {{program}} options are incompatible with the
+     ``--uri`` option. Instead, specify these options as part of your
+     ``--uri`` connection string when applicable:
+
+     - ``--host``
+     - ``--port``
+     - ``--db``
+     - ``--username``
+     - ``--password`` (when specifying the password as part of the
+       :doc:`URI </reference/connection-string/>` connection string)
+     - ``--authenticationDatabase``
+     - ``--authenticationMechanism``
 ---
 program: _shared
 name: json

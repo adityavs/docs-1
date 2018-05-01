@@ -33,6 +33,22 @@ Minor Releases
 
       /release-notes/3.2-changelog
 
+.. _3.2.19-release-notes:
+
+3.2.19 - Feb 6, 2018
+~~~~~~~~~~~~~~~~~~~~
+
+- :issue:`SERVER-30189`: Reduce calls to allocator for large $in expressions
+- :issue:`SERVER-30853`: Update Mongod init scripts to set unlimited locked memory
+- :issue:`SERVER-32001`: Unindexing a key in a partial unique index may cause server crash
+- :issue:`SERVER-32048`: Updates using a numeric path component may cause index entries not to be created
+
+- :ref:`3.2.19-changelog`
+
+- `All JIRA issues closed in 3.2.19
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%273.2.19%27>`_
+
+
 .. _3.2.18-release-notes:
 
 3.2.18 - Nov 29, 2017
@@ -58,7 +74,7 @@ Issues fixed:
 - :issue:`SERVER-30943`: Segmentation fault on attempt to access an invalidated BSON Object in JS scope
 
 - :issue:`WT-3327`: Checkpoints can hang if time runs backward
- 
+
 - :ref:`3.2.17-changelog`
 
 - `All JIRA issues closed in 3.2.17
@@ -109,7 +125,7 @@ Issues fixed:
 
 - :issue:`SERVER-26452`: ``renameCollection`` should handle write conflicts.
 
-- :issue:`SERVER-29365`: No-op ``applyOps`` does not wait for majority writeConcern before returning. 
+- :issue:`SERVER-29365`: No-op ``applyOps`` does not wait for majority writeConcern before returning.
 
 - :issue:`SERVER-28014`: When ssl mode is ``preferSSL``, should log
   connections that do not use SSL.
@@ -121,7 +137,7 @@ Issues fixed:
 
 .. _3.2.13-release-notes:
 
-3.2.13 -- May 1, 2017 
+3.2.13 -- May 1, 2017
 ~~~~~~~~~~~~~~~~~~~~~
 
 Issues fixed:
@@ -493,8 +509,9 @@ For more information, see :doc:`/core/sharded-cluster-config-servers`.
 To deploy a **new** sharded cluster with replica set config servers,
 see :doc:`/tutorial/deploy-shard-cluster`.
 
-.. include:: /includes/extracts/master-slave-deprecated-for-sharded-cluster.rst
-
+MongoDB 3.2 deprecates the use of master-slave replication for
+components of sharded clusters.
+   
 Starting in 3.2, :binary:`~bin.mongos`, during its startup, will continue
 to try to contact the config servers until one becomes available. In
 previous versions, :binary:`~bin.mongos`, during its startup, would shut
@@ -1270,7 +1287,7 @@ List of known issues in the 3.2.1 release:
 - Performance regression on unicode-aware text processing logic (text
   index v3): :issue:`SERVER-19936`
 
-- Results from the :pipeline:`$indexStats` operator do not take into account queries 
+- Results from the :pipeline:`$indexStats` operator do not take into account queries
   which use the :pipeline:`$match` or :dbcommand:`mapReduce` functions: :issue:`SERVER-22048`
 
 Known Issues in 3.2.0
@@ -1306,8 +1323,8 @@ List of known issues in the 3.2.0 release:
 
 - Severe performance regression in insert workload under Windows with
   WiredTiger: :issue:`SERVER-21792`
-  
-- Results from the :pipeline:`$indexStats` operator do not take into account queries 
+
+- Results from the :pipeline:`$indexStats` operator do not take into account queries
   which use the :pipeline:`$match` or :dbcommand:`mapReduce` functions: :issue:`SERVER-22048`
 
 Download
